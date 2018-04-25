@@ -69,6 +69,33 @@ public class MockServer {
         }
     }
 
+    public static Optional<Class<? extends AbstractResponse>> getResponseClass(String response) {
+        Optional<String> type;
+        try {
+            type = Optional.ofNullable(JsonParser.getObjectMapper().readValue(response, ObjectNode.class).get("type"))
+                    .map(JsonNode::asText);
+        } catch (IOException e) {
+            LOGGER.error("Wrong JSON format, no type identifier");
+            return Optional.empty();
+        }
+
+        if(type.isPresent()) {
+            switch (type.get()) {
+                case "UnifiedResponse":
+                    return Optional.of(UnifiedResponse.class);
+                case "UndefinedResponse":
+                    return Optional.of(UndefinedResponse.class);
+                case "ErrorResponse":
+                    return Optional.of(UndefinedResponse.class);
+                default:
+                    LOGGER.warn("Unknown request type");
+                    return Optional.empty();
+            }
+        }else {
+            return Optional.empty();
+        }
+    }
+
 
     private Optional<Class<? extends AbstractRequest>> getRequestClass(String type) {
         switch (type) {

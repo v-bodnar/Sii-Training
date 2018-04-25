@@ -27,7 +27,8 @@ public class Validator {
 
                 if (propertyDescriptor.getName().equals("class")
                         || propertyDescriptor.getName().equals("type")
-                        || propertyDescriptor.getName().equals("uuid")) {
+                        || propertyDescriptor.getName().equals("uuid")
+                        || propertyDescriptor.getName().equals("responseCallback")) {
                     continue;
                 }
 
@@ -36,7 +37,8 @@ public class Validator {
 
                 if (field.getAnnotation(Length.class) != null) {
                     maxSize = lengthAnnotation.maxSize();
-                    if(((String)getter.invoke(abstractRequest)).length() > maxSize){
+                    String message = ((String)getter.invoke(abstractRequest));
+                    if(message != null && message.length() > maxSize){
                         throw new ValidationException("Message exceeds allowed limit");
                     }
                 }

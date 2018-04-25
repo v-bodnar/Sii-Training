@@ -7,6 +7,7 @@ project.ext {
 apply plugin: 'aspectj'
 apply plugin: 'idea'
 apply plugin: 'java'
+//apply from: "checkerframework.gradle"
 
 buildscript {
     repositories {

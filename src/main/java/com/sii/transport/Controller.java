@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -24,7 +26,7 @@ public class Controller {
     });
 
     private BlockingDeque<AbstractRequest> messageQueue = new LinkedBlockingDeque<>();
-
+    private Map<String, AbstractRequest> sentRequests = new ConcurrentHashMap<>();
 
     public void sendMessage(AbstractRequest message) throws ValidationException {
         Instant start = Instant.now();
@@ -42,7 +44,12 @@ public class Controller {
     }
 
     public void onResponse(String response) {
-        executorService.submit(() -> LOGGER.info("Response received: " + response));
+        executorService.submit(() ->{
+            LOGGER.info("Response received: " + response);
+            MockServer.getResponseClass(response).ifPresent(aClass -> JsonParser.toObject(response, aClass)
+                    .ifPresent(abstractResponse -> sentRequests.get(abstractResponse.getUuid()).onResponse(abstractResponse)));
+        });
+
     }
 
     public void startListening() {
@@ -50,6 +57,7 @@ public class Controller {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     AbstractRequest message = messageQueue.take();
+                    sentRequests.put(message.getUuid(), message);
                     LOGGER.info("Queue has a message to send");
                     JsonParser.toJson(message)
                             .ifPresent(MockServer.getInstance()::onMessageReceived);
