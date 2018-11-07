@@ -1,0 +1,6 @@
+
+dependencies {
+    compile project(':interfaces')
+    testCompile group: 'org.jboss.weld', name: 'weld-junit-parent', version: '1.3.1.Final', ext: 'pom'
+
+}

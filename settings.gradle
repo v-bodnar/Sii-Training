@@ -1,2 +1,5 @@
-rootProject.name = 'aop-training'
+rootProject.name = 'sii-training'
+include 'interfaces'
+include 'elam'
+include 'core'
 
