@@ -1,6 +1,7 @@
 package com.sii.service;
 
 import com.sii.action.LogReader;
+import com.sii.events.ChargingStartedEvent;
 import com.sii.interceptors.Logged;
 import com.sii.interfaces.AuthorizationService;
 import com.sii.interfaces.ChargePointService;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
@@ -32,11 +35,14 @@ public class GenericChargePointService implements ChargePointService {
 //    @Inject
 //    private Logger LOGGER;
 
+//    @Inject @Any
+//    private Event<ChargingStartedEvent> chargePointEvent;
+
     @Inject
     private PaymentTerminal paymentTerminal;
 
-    @Inject @Configured
-    private AuthorizationService authorizationService;
+//    @Inject @Configured
+//    private AuthorizationService authorizationService;
 
 //    @Inject
     private ChargePoint chargePoint = new ChargePoint();
@@ -60,9 +66,10 @@ public class GenericChargePointService implements ChargePointService {
     @Logged
     public void startCharging() {
         LOGGER.info("Starting charging");
-        authorizationService.authorize();
+//        authorizationService.authorize();
         chargePoint.setCharging(true);
         chargePoint.setChargingStartedAt(Instant.now());
+//        chargePointEvent.fire(new ChargingStartedEvent());
     }
 
     @Override
