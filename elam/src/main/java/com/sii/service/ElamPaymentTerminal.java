@@ -1,14 +1,5 @@
 package com.sii.service;
 
-import com.sii.PaymentTerminal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
-
 
 //@ApplicationScoped
 //public class ElamPaymentTerminal implements PaymentTerminal {
